@@ -1,0 +1,75 @@
+swagger: '2.0'
+info:
+  version: 0.0.1
+  title: BSAD Token JWT
+host: 'susc.bradescoseguros.com.br:7017'
+basePath: /
+schemes:
+  - https
+paths:
+  /autenticarEDir:
+    post:
+      consumes: 
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/autenticarRequest'
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          schema:
+            $ref: '#/definitions/autenticarResponse'
+
+  /renovarSessao:
+    get:
+      produces:
+        - application/json
+      
+      parameters:
+        - in: header
+          name: refreshToken
+          type: string
+          required: true
+
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          schema:
+            $ref: '#/definitions/renovarSessaoResponse'
+
+definitions:
+  autenticarRequest:
+    type: object
+    properties:
+      user:
+        type: string
+        description: Usuário para logar no EDir pode ser o email ou cpf
+      password:
+        type: string
+        
+  autenticarResponse:
+    type: object
+    properties:
+      cn:
+        type: string
+      cpf:
+        type: string
+      email:
+        type: string
+      jwt:
+        type: string
+      refreshToken:
+        type: string
+        
+  renovarSessaoResponse:
+    type: object
+    properties:
+      newJWT:
+        type: string
+  
