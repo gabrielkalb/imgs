@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "title": "API responsible credit life insurance products"
   },
-  "host": "wsphttp.dsv.bradseg.com.br",
+  "host": "host.com.br",
   "basePath": "/SISE-CotacaoPrest",
   "tags": [
     {
