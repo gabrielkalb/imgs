@@ -1,0 +1,1047 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API responsible credit life insurance products"
+  },
+  "host": "wsphttp.dsv.bradseg.com.br",
+  "basePath": "/SISE-CotacaoPrest",
+  "tags": [
+    {
+      "name": "prestamista-produtos",
+      "description": "API de serviços Prestamista Massificados (Bradesco Seguros)."
+    },
+    {
+      "name": "prestamista-cotacao",
+      "description": "API de Cotação Prestamista Massificados (Bradesco Seguros)."
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/cotacao/incluir-cotacao": {
+      "post": {
+        "tags": [
+          "prestamista-cotacao"
+        ],
+        "summary": "Obtem a Cotacao de Seguro Prestamista",
+        "description": "Obtem a cotacao",
+        "operationId": "calcularCotacaoPrestamistaMass",
+        "parameters": [
+          {
+            "name": "cdOrigemTransmissao",
+            "in": "header",
+            "description": "Canal Origem de Transmissao usado para chamada da API",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "nroControleCotacao",
+            "in": "header",
+            "description": "Número de Controle da Cotação",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "cotacao",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Cotacao"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "schema": {
+              "$ref": "#/definitions/inline_response_201"
+            }
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "401": {
+            "description": "Unauthorized Access."
+          },
+          "403": {
+            "description": "Forbidden Access."
+          },
+          "404": {
+            "description": "Not Found."
+          },
+          "422": {
+            "description": "Semantic Error.",
+            "schema": {
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Erro"
+                },
+                "idcStatus": {
+                  "type": "integer",
+                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error."
+          },
+          "503": {
+            "description": "Service Unavailable."
+          }
+        }
+      }
+    },
+    "/v1/proposta/gerar-proposta": {
+      "post": {
+        "tags": [
+          "prestamista-proposta"
+        ],
+        "summary": "Envia a proposta de Seguro Prestamista",
+        "description": "Gera a proposta",
+        "operationId": "gerarPropostaPrestamistaMass",
+        "parameters": [
+          {
+            "name": "cdOrigemTransmissao",
+            "in": "header",
+            "description": "Canal Origem de Transmissao usado para chamada da API",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "proposta",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Proposta"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "schema": {
+              "$ref": "#/definitions/inline_response_201_1"
+            }
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "401": {
+            "description": "Unauthorized Access."
+          },
+          "403": {
+            "description": "Forbidden Access."
+          },
+          "404": {
+            "description": "Not Found."
+          },
+          "422": {
+            "description": "Semantic Error.",
+            "schema": {
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Erro"
+                },
+                "idcStatus": {
+                  "type": "integer",
+                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error."
+          },
+          "503": {
+            "description": "Service Unavailable."
+          }
+        }
+      }
+    },
+    "/v1/produto/consulta/cotacao": {
+      "get": {
+        "tags": [
+          "prestamista-produtos"
+        ],
+        "summary": "Consultar Cotação",
+        "description": "Consultar Cotação",
+        "operationId": "consultarCotacao",
+        "parameters": [
+          {
+            "name": "cdOrigemTransmissao",
+            "in": "header",
+            "description": "Canal Origem de Transmissao usado para chamada da API",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "Tipo de pesquisa",
+            "in": "query",
+            "description": "1- P/ Nro. Controle -> Recuperar Vcto e Status e 2- P/ Nro. Controle -> Recuperar Objeto Cotação",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "Numero de controle da Cotacao",
+            "in": "query",
+            "description": "Numero de controle da cotacao. Obrigatorio se tipo pesquisa for igual a 1",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/inline_response_201"
+            }
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "401": {
+            "description": "Unauthorized Access."
+          },
+          "403": {
+            "description": "Forbidden Access."
+          },
+          "404": {
+            "description": "Not Found."
+          },
+          "422": {
+            "description": "Semantic Error.",
+            "schema": {
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Erro"
+                },
+                "idcStatus": {
+                  "type": "integer",
+                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error."
+          },
+          "503": {
+            "description": "Service Unavailable."
+          }
+        }
+      }
+    },
+    "/v1/proposta/log-emissao": {
+      "get": {
+        "tags": [
+          "prestamista-proposta"
+        ],
+        "summary": "Consulta Log de Processamento da proposta de Seguro Prestamista na Fila de Emissão",
+        "description": "Consultar Log da Proposta",
+        "operationId": "obterLogPropostaPrestamistaMass",
+        "parameters": [
+          {
+            "name": "cdOrigemTransmissao",
+            "in": "query",
+            "description": "Canal Origem de Transmissao usado para chamada da API",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "nroControleCotacao",
+            "in": "query",
+            "description": "Numero de controle da cotacao. Obrigatorio.",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "cdLog": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
+                    },
+                    "dsLog": {
+                      "type": "string",
+                      "description": "Descrição do evento ocorrido no processamento da Proposta"
+                    },
+                    "dtLog": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Data da Ocorrencia no processamento da Proposta"
+                    },
+                    "cdAcao": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Código da Ação Tomada para contornar ocorrencia caso necessário"
+                    },
+                    "dsAcao": {
+                      "type": "string",
+                      "description": "Descricao da Ação Tomada para contornar ocorrencia caso necessário"
+                    },
+                    "dtAcao": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Data da da Ação Tomada para contornar ocorrencia caso necessário"
+                    }
+                  }
+                },
+                "idcStatus": {
+                  "type": "integer",
+                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "401": {
+            "description": "Unauthorized Access."
+          },
+          "403": {
+            "description": "Forbidden Access."
+          },
+          "404": {
+            "description": "Not Found."
+          },
+          "422": {
+            "description": "Semantic Error.",
+            "schema": {
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Erro"
+                },
+                "idcStatus": {
+                  "type": "integer",
+                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error."
+          },
+          "503": {
+            "description": "Service Unavailable."
+          }
+        }
+      }
+    },
+    "/v1/proposta/reprocessar-emissao": {
+      "put": {
+        "tags": [
+          "prestamista-proposta"
+        ],
+        "summary": "Reennvia a proposta de Seguro Prestamista para Fila de Emissão",
+        "description": "Reenviar a proposta",
+        "operationId": "reenviarPropostaPrestamistaMass",
+        "parameters": [
+          {
+            "name": "cdOrigemTransmissao",
+            "in": "query",
+            "description": "Canal Origem de Transmissao usado para chamada da API",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "nroControleCotacao",
+            "in": "query",
+            "description": "Numero de controle da cotacao. Obrigatorio.",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "cdStatus",
+            "in": "query",
+            "description": "Situação desejada da proposta. L:Liberada(Reenvia a Fila) C:Cancelada",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "nroProposta",
+            "in": "query",
+            "description": "Número da Proposta a reenviar.",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "cdProduto",
+            "in": "query",
+            "description": "Código do Produto da Proposta a reenviar.",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "nroRegistros": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Quantidade de Resgistros Atualizados"
+                    }
+                  }
+                },
+                "idcStatus": {
+                  "type": "integer",
+                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "401": {
+            "description": "Unauthorized Access."
+          },
+          "403": {
+            "description": "Forbidden Access."
+          },
+          "404": {
+            "description": "Not Found."
+          },
+          "422": {
+            "description": "Semantic Error.",
+            "schema": {
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Erro"
+                },
+                "idcStatus": {
+                  "type": "integer",
+                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error."
+          },
+          "503": {
+            "description": "Service Unavailable."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PropostaResponse": {
+      "type": "object",
+      "properties": {
+        "idcCritica": {
+          "type": "boolean",
+          "description": "Indica se possui Impedimentos / Críticas"
+        },
+        "cdStatus": {
+          "type": "integer",
+          "description": "Cód. Situação da Cotação \nC: Criticada, \nA: Apta a Proposta, \nL: Liberada para Emissão\nE: Emitida\nR: Reenviar"
+        },
+        "criticas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Critica"
+          }
+        }
+      }
+    },
+    "Critica": {
+      "type": "object",
+      "properties": {
+        "codCritica": {
+          "type": "integer"
+        },
+        "descCriticaSISE": {
+          "type": "string"
+        },
+        "descCriticaCanal": {
+          "type": "string"
+        },
+        "idcTipoCritica": {
+          "type": "integer"
+        }
+      }
+    },
+    "Proposta": {
+      "type": "object",
+      "properties": {
+        "nroControleCotacao": {
+          "type": "integer"
+        },
+        "nroPrefixo": {
+          "type": "integer"
+        },
+        "nroProposta": {
+          "type": "integer"
+        },
+        "cdPlano": {
+          "type": "integer"
+        },
+        "dtIniVigencia": {
+          "type": "string",
+          "format": "date"
+        },
+        "dtFimVigencia": {
+          "type": "string",
+          "format": "date"
+        },
+        "dtVencPrimeiraParcFinanc": {
+          "type": "string",
+          "format": "date"
+        },
+        "nroDiaVencimento": {
+          "type": "integer"
+        },
+        "endereco": {
+          "$ref": "#/definitions/EnderecoProposta"
+        },
+        "contato": {
+          "$ref": "#/definitions/ContatoProposta"
+        }
+      }
+    },
+    "Cotacao": {
+      "type": "object",
+      "properties": {
+        "produto": {
+          "$ref": "#/definitions/ProdutoCotacao"
+        },
+        "proponente": {
+          "$ref": "#/definitions/Proponente"
+        },
+        "pagamento": {
+          "$ref": "#/definitions/Pagamento"
+        }
+      }
+    },
+    "ProdutoCotacao": {
+      "type": "object",
+      "required": [
+        "cdCanalVenda",
+        "cdPlano",
+        "cdProduto",
+        "dtAssinaturaProposta",
+        "nroAgProdutora",
+        "qtMeses",
+        "vlCapital",
+        "vlParcelaFinanc"
+      ],
+      "properties": {
+        "cdCanalVenda": {
+          "type": "integer",
+          "description": "Código do Canal de Venda"
+        },
+        "cdProduto": {
+          "type": "integer",
+          "description": "Código do Produto do Seguro"
+        },
+        "cdPlano": {
+          "type": "integer",
+          "description": "Código do Plano do Produto de Seguro"
+        },
+        "dtAssinaturaProposta": {
+          "type": "string",
+          "format": "date",
+          "description": "Data de assinatura da Proposta / Data de celebração ISO yyyy-MM-dd"
+        },
+        "nroAgProdutora": {
+          "type": "integer",
+          "description": "Número da Agência de Venda"
+        },
+        "vlCapital": {
+          "type": "number",
+          "description": "Valor do Capital Segurado"
+        },
+        "qtMeses": {
+          "type": "integer",
+          "description": "Quantidade de meses do financiamento sem carência"
+        },
+        "vlParcelaFinanc": {
+          "type": "number",
+          "description": "Valor da Parcela do Empréstimo"
+        }
+      }
+    },
+    "Proponente": {
+      "type": "object",
+      "required": [
+        "cdEstadocivil",
+        "cdSexo",
+        "dtNasc",
+        "nmNome"
+      ],
+      "properties": {
+        "nmNome": {
+          "type": "string",
+          "description": "Nome do Proponente",
+          "maxLength": 50
+        },
+        "dtNasc": {
+          "type": "string",
+          "format": "date",
+          "description": "Data de Nascimento do Proponente ISO yyyy-MM-dd"
+        },
+        "cdSexo": {
+          "type": "integer",
+          "description": "Indicador de Sexo do Proponente\n- 1: Masculino \n- 2: Feminino"
+        },
+        "cdEstadocivil": {
+          "type": "integer",
+          "description": "Indicador do Estado Civil do Proponente\n- 1: Solteiro\n- 2: Viuvo\n- 3: Casado\n- 4: Desquitado\n- 5: Divorciado"
+        },
+        "documento": {
+          "$ref": "#/definitions/Documento"
+        },
+        "endereco": {
+          "$ref": "#/definitions/EnderecoCotacao"
+        }
+      }
+    },
+    "Pagamento": {
+      "type": "object",
+      "required": [
+        "cdFormaPagto",
+        "cdFrequenciaPagto"
+      ],
+      "properties": {
+        "cdFormaPagto": {
+          "type": "integer",
+          "description": "Código da Forma de Pagamento\n- 1: Debito em Conta Corrente"
+        },
+        "nroAgenciaProponente": {
+          "type": "integer",
+          "description": "Número da Agência Bancária do Proponente"
+        },
+        "nroContaProponente": {
+          "type": "integer",
+          "description": "Número da Conta do Proponente"
+        },
+        "nroDigitoContaProponente": {
+          "type": "integer",
+          "description": "Digito da Conta do Proponente"
+        },
+        "cdFrequenciaPagto": {
+          "type": "integer",
+          "description": "Frequência de Pagamento\n1 - Mensal"
+        }
+      }
+    },
+    "Documento": {
+      "type": "object",
+      "required": [
+        "cdTipoDocto",
+        "nroCpfCnpj"
+      ],
+      "properties": {
+        "cdTipoDocto": {
+          "type": "integer",
+          "description": "Tipo de Documento do Proponente\n- 1: RG\n- 2: CPF\n- 3: CNPJ"
+        },
+        "nroCpfCnpj": {
+          "type": "string",
+          "maxLength": 15
+        }
+      }
+    },
+    "CotacaoResponse": {
+      "type": "object",
+      "properties": {
+        "nroControleCotacao": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Número de Controle da Cotação"
+        },
+        "dtVctoCotacao": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Data Hora de Vencimento da Cotação ISO yyyy-MM-ddTHH:MM:SSZ"
+        },
+        "idcCritica": {
+          "type": "boolean",
+          "description": "Indica se possui Impedimentos / Críticas"
+        },
+        "cdStatus": {
+          "type": "string",
+          "description": "Cód. Situação da Cotação\n  C: Criticada, \n  A: Apta a Proposta, \n  L: Liberada para Emissão\n  E: Emitida"
+        },
+        "ofertas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Ofertas"
+          }
+        },
+        "criticas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CriticaCotacao"
+          }
+        }
+      }
+    },
+    "Ofertas": {
+      "type": "object",
+      "properties": {
+        "cdPlano": {
+          "type": "number",
+          "description": "Código do Plano"
+        },
+        "descPlano": {
+          "type": "string",
+          "description": "Nome do Plano",
+          "maxLength": 40
+        },
+        "premio": {
+          "$ref": "#/definitions/Premio"
+        },
+        "coberturas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Cobertura"
+          }
+        }
+      }
+    },
+    "Premio": {
+      "type": "object",
+      "properties": {
+        "vlPremioLiqCalc": {
+          "type": "number",
+          "description": "Valor do Premio Líquido Calculado"
+        },
+        "vlIofCalc": {
+          "type": "number",
+          "description": "Valor do IOF Calculado"
+        },
+        "vlPremioBrutoCalc": {
+          "type": "number",
+          "description": "Valor do Prêmio Bruto Calculado"
+        }
+      }
+    },
+    "Cobertura": {
+      "type": "object",
+      "properties": {
+        "cdCober": {
+          "type": "integer",
+          "description": "Codigo da Cobertura"
+        },
+        "descCobertura": {
+          "type": "string",
+          "description": "Descricao da Cobertura"
+        },
+        "vlCapitalCober": {
+          "type": "number",
+          "description": "Valor do Capital da Cobertura"
+        },
+        "vlTaxaCober": {
+          "type": "number",
+          "description": "Valor da Taxa de Cobertura"
+        },
+        "vlPremioCober": {
+          "type": "number",
+          "description": "Valor do Premio da Cobertura"
+        },
+        "vlIofCober": {
+          "type": "number",
+          "description": "Valor do IOF da Cobertura"
+        },
+        "nroOrdemImpressao": {
+          "type": "integer",
+          "description": "Numero de ordenacao para demonstracao / impressao"
+        }
+      }
+    },
+    "EnderecoCotacao": {
+      "type": "object",
+      "required": [
+        "nroCep"
+      ],
+      "properties": {
+        "nroCep": {
+          "type": "string",
+          "example": "06460-020",
+          "description": "Código CEP do Proponente",
+          "maxLength": 9,
+          "pattern": "([0-9]{5})-([0-9]{3})"
+        }
+      }
+    },
+    "EnderecoProposta": {
+      "type": "object",
+      "required": [
+        "cdUf",
+        "descBairro",
+        "descCidade",
+        "descEndereco"
+      ],
+      "properties": {
+        "descEndereco": {
+          "type": "string",
+          "description": "Endereço",
+          "maxLength": 60
+        },
+        "descComplEndereco": {
+          "type": "string",
+          "description": "Endereço",
+          "maxLength": 30
+        },
+        "descBairro": {
+          "type": "string",
+          "description": "Bairro",
+          "maxLength": 40
+        },
+        "descCidade": {
+          "type": "string",
+          "description": "Cidade",
+          "maxLength": 30
+        },
+        "cdUf": {
+          "type": "string",
+          "description": "UF",
+          "maxLength": 2
+        }
+      }
+    },
+    "ContatoProposta": {
+      "type": "object",
+      "properties": {
+        "descEmail": {
+          "type": "string",
+          "description": "Email",
+          "maxLength": 100
+        },
+        "nroDDDRes": {
+          "type": "number",
+          "description": "DDD Residencial"
+        },
+        "nroTelefoneRes": {
+          "type": "string",
+          "description": "Telefone Residencial",
+          "maxLength": 100
+        },
+        "nroDDDCelular": {
+          "type": "number",
+          "description": "DDD Celular"
+        },
+        "nroTelefoneCelular": {
+          "type": "string",
+          "description": "Telefone Celular",
+          "maxLength": 100
+        }
+      }
+    },
+    "CriticaCotacao": {
+      "type": "object",
+      "properties": {
+        "codCritica": {
+          "type": "integer",
+          "description": "Codigo da Critica"
+        },
+        "descCritica": {
+          "type": "string",
+          "description": "Descricao da Crítica",
+          "maxLength": 100
+        }
+      }
+    },
+    "Erro": {
+      "type": "object",
+      "properties": {
+        "codigo": {
+          "type": "integer"
+        },
+        "origem": {
+          "type": "string"
+        },
+        "mensagem": {
+          "type": "string"
+        }
+      }
+    },
+    "inline_response_201": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/CotacaoResponse"
+        },
+        "idcStatus": {
+          "type": "integer",
+          "description": "Identificador do Resultado da Requisição\n- 0: Êxito/Sucesso na requisição\nmaxLength: 1"
+        }
+      },
+      "description": "Success Response Structure"
+    },
+    "inline_response_201_1": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/PropostaResponse"
+        },
+        "idcStatus": {
+          "type": "integer",
+          "description": "Identificador do Resultado da Requisição\n- 0: Êxito/Sucesso na requisição\nmaxLength: 1"
+        }
+      },
+      "description": "Success Response Structure"
+    }
+  },
+  "parameters": {
+    "canal_origem": {
+      "name": "cdOrigemTransmissao",
+      "in": "header",
+      "description": "Canal Origem de Transmissao usado para chamada da API",
+      "required": true,
+      "type": "integer"
+    },
+    "codigo_produto": {
+      "name": "cdProduto",
+      "in": "query",
+      "description": "Código do Produto de Seguro",
+      "required": true,
+      "type": "integer"
+    },
+    "codigo_plano": {
+      "name": "cdPlano",
+      "in": "query",
+      "description": "Código do Plano do Produto de Seguro",
+      "required": false,
+      "type": "integer"
+    },
+    "codigo_seguradora": {
+      "name": "cdCia",
+      "in": "query",
+      "description": "Código da Companhia Seguradora",
+      "required": false,
+      "type": "integer"
+    },
+    "codigo_dominio": {
+      "name": "cdDominio",
+      "in": "query",
+      "description": "Codigo do Dominio",
+      "required": true,
+      "type": "string",
+      "maxLength": 20
+    },
+    "tipo_critica": {
+      "name": "idcTipoCritica",
+      "in": "query",
+      "description": "Indicador do tipo de crítica\n- 1: Física\n- 2: Lógica\n- 3: Emissão",
+      "required": false,
+      "type": "integer"
+    },
+    "numero_proposta": {
+      "name": "nroProposta",
+      "in": "query",
+      "required": true,
+      "type": "integer"
+    },
+    "numero_controle": {
+      "name": "nroControleCotacao",
+      "in": "header",
+      "description": "Número de Controle da Cotação",
+      "required": false,
+      "type": "integer",
+      "format": "int64"
+    },
+    "codigo_valor": {
+      "name": "cdValor",
+      "in": "query",
+      "description": "Codigo do Valor",
+      "required": false,
+      "type": "integer"
+    },
+    "tipo_dominio": {
+      "name": "tipo",
+      "in": "query",
+      "description": "Tipo de Dominio",
+      "required": false,
+      "type": "integer"
+    },
+    "dtBaseFatorPer": {
+      "name": "dtBaseFatorPer",
+      "in": "query",
+      "description": "Data de Referência do Fator Periodicidade",
+      "required": false,
+      "type": "string"
+    },
+    "dtBaseIOF": {
+      "name": "dtBaseIOF",
+      "in": "query",
+      "description": "Data de Referência do IOF",
+      "required": false,
+      "type": "string"
+    },
+    "tpPesquisa": {
+      "name": "Tipo de pesquisa",
+      "in": "query",
+      "description": "1- P/ Nro. Controle -> Recuperar Vcto e Status e 2- P/ Nro. Controle -> Recuperar Objeto Cotação",
+      "required": false,
+      "type": "integer"
+    },
+    "nroControleCotacao": {
+      "name": "Numero de controle da Cotacao",
+      "in": "query",
+      "description": "Numero de controle da cotacao. Obrigatorio se tipo pesquisa for igual a 1",
+      "required": false,
+      "type": "integer"
+    }
+  },
+  "responses": {
+    "BadRequest": {
+      "description": "Bad request."
+    },
+    "Unauthorized": {
+      "description": "Unauthorized Access."
+    },
+    "Forbidden": {
+      "description": "Forbidden Access."
+    },
+    "NotFound": {
+      "description": "Not Found."
+    },
+    "UnprocessableEntity": {
+      "description": "Semantic Error.",
+      "schema": {
+        "properties": {
+          "data": {
+            "$ref": "#/definitions/Erro"
+          },
+          "idcStatus": {
+            "type": "integer",
+            "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
+          }
+        }
+      }
+    },
+    "InternalServerError": {
+      "description": "Internal Server Error."
+    },
+    "ServiceUnavailable": {
+      "description": "Service Unavailable."
+    }
+  }
+}
