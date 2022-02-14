@@ -1,1047 +1,1036 @@
 {
   "swagger": "2.0",
   "info": {
+    "description": "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters.",
     "version": "1.0.0",
-    "title": "API responsible credit life insurance products"
+    "title": "Swagger Petstore",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
-  "host": "host.com.br",
-  "basePath": "/SISE-CotacaoPrest",
+  "host": "petstore.swagger.io",
+  "basePath": "/v2",
   "tags": [
     {
-      "name": "prestamista-produtos",
-      "description": "API de serviços Prestamista Massificados (Bradesco Seguros)."
+      "name": "pet",
+      "description": "Everything about your Pets",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
     },
     {
-      "name": "prestamista-cotacao",
-      "description": "API de Cotação Prestamista Massificados (Bradesco Seguros)."
+      "name": "store",
+      "description": "Access to Petstore orders"
+    },
+    {
+      "name": "user",
+      "description": "Operations about user",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "http://swagger.io"
+      }
     }
   ],
   "schemes": [
-    "http",
-    "https"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
+    "https",
+    "http"
   ],
   "paths": {
-    "/v1/cotacao/incluir-cotacao": {
+    "/pet": {
       "post": {
         "tags": [
-          "prestamista-cotacao"
+          "pet"
         ],
-        "summary": "Obtem a Cotacao de Seguro Prestamista",
-        "description": "Obtem a cotacao",
-        "operationId": "calcularCotacaoPrestamistaMass",
+        "summary": "Add a new pet to the store",
+        "description": "",
+        "operationId": "addPet",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "cdOrigemTransmissao",
-            "in": "header",
-            "description": "Canal Origem de Transmissao usado para chamada da API",
+            "in": "body",
+            "name": "body",
+            "description": "Pet object that needs to be added to the store",
             "required": true,
-            "type": "integer"
-          },
+            "schema": {
+              "$ref": "#/definitions/Pet"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
           {
-            "name": "nroControleCotacao",
-            "in": "header",
-            "description": "Número de Controle da Cotação",
-            "required": false,
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Update an existing pet",
+        "description": "",
+        "operationId": "updatePet",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Pet object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Pet"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Pet not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/pet/findByStatus": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Finds Pets by status",
+        "description": "Multiple status values can be provided with comma separated strings",
+        "operationId": "findPetsByStatus",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Status values that need to be considered for filter",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "available",
+                "pending",
+                "sold"
+              ],
+              "default": "available"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Pet"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/pet/findByTags": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Finds Pets by tags",
+        "description": "Muliple tags can be provided with comma separated strings. Use         tag1, tag2, tag3 for testing.",
+        "operationId": "findPetsByTags",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "tags",
+            "in": "query",
+            "description": "Tags to filter by",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Pet"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ],
+        "deprecated": true
+      }
+    },
+    "/pet/{petId}": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Find pet by ID",
+        "description": "Returns a single pet",
+        "operationId": "getPetById",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "description": "ID of pet to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Pet"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Pet not found"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Updates a pet in the store with form data",
+        "description": "",
+        "operationId": "updatePetWithForm",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "description": "ID of pet that needs to be updated",
+            "required": true,
             "type": "integer",
             "format": "int64"
           },
           {
-            "in": "body",
-            "name": "cotacao",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Cotacao"
-            }
+            "name": "name",
+            "in": "formData",
+            "description": "Updated name of the pet",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "formData",
+            "description": "Updated status of the pet",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
-          "201": {
-            "description": "Successful Response",
-            "schema": {
-              "$ref": "#/definitions/inline_response_201"
-            }
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Deletes a pet",
+        "description": "",
+        "operationId": "deletePet",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "required": false,
+            "type": "string"
           },
+          {
+            "name": "petId",
+            "in": "path",
+            "description": "Pet id to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
           "400": {
-            "description": "Bad request."
-          },
-          "401": {
-            "description": "Unauthorized Access."
-          },
-          "403": {
-            "description": "Forbidden Access."
+            "description": "Invalid ID supplied"
           },
           "404": {
-            "description": "Not Found."
-          },
-          "422": {
-            "description": "Semantic Error.",
-            "schema": {
-              "properties": {
-                "data": {
-                  "$ref": "#/definitions/Erro"
-                },
-                "idcStatus": {
-                  "type": "integer",
-                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error."
-          },
-          "503": {
-            "description": "Service Unavailable."
+            "description": "Pet not found"
           }
-        }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
       }
     },
-    "/v1/proposta/gerar-proposta": {
+    "/pet/{petId}/uploadImage": {
       "post": {
         "tags": [
-          "prestamista-proposta"
+          "pet"
         ],
-        "summary": "Envia a proposta de Seguro Prestamista",
-        "description": "Gera a proposta",
-        "operationId": "gerarPropostaPrestamistaMass",
+        "summary": "uploads an image",
+        "description": "",
+        "operationId": "uploadFile",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "cdOrigemTransmissao",
-            "in": "header",
-            "description": "Canal Origem de Transmissao usado para chamada da API",
+            "name": "petId",
+            "in": "path",
+            "description": "ID of pet to update",
             "required": true,
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "additionalMetadata",
+            "in": "formData",
+            "description": "Additional data to pass to server",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "file to upload",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/store/inventory": {
+      "get": {
+        "tags": [
+          "store"
+        ],
+        "summary": "Returns pet inventories by status",
+        "description": "Returns a map of status codes to quantities",
+        "operationId": "getInventory",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/store/order": {
+      "post": {
+        "tags": [
+          "store"
+        ],
+        "summary": "Place an order for a pet",
+        "description": "",
+        "operationId": "placeOrder",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "order placed for purchasing the pet",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          },
+          "400": {
+            "description": "Invalid Order"
+          }
+        }
+      }
+    },
+    "/store/order/{orderId}": {
+      "get": {
+        "tags": [
+          "store"
+        ],
+        "summary": "Find purchase order by ID",
+        "description": "For valid response try integer IDs with value >= 1 and <= 10.         Other values will generated exceptions",
+        "operationId": "getOrderById",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "ID of pet that needs to be fetched",
+            "required": true,
+            "type": "integer",
+            "maximum": 10,
+            "minimum": 1,
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Order not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "store"
+        ],
+        "summary": "Delete purchase order by ID",
+        "description": "For valid response try integer IDs with positive integer value.         Negative or non-integer values will generate API errors",
+        "operationId": "deleteOrder",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "ID of the order that needs to be deleted",
+            "required": true,
+            "type": "integer",
+            "minimum": 1,
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Order not found"
+          }
+        }
+      }
+    },
+    "/user": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Create user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "createUser",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Created user object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/user/createWithArray": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Creates list of users with given input array",
+        "description": "",
+        "operationId": "createUsersWithArrayInput",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/user/createWithList": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Creates list of users with given input array",
+        "description": "",
+        "operationId": "createUsersWithListInput",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "List of user object",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Logs user into the system",
+        "description": "",
+        "operationId": "loginUser",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "description": "The user name for login",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "The password for login in clear text",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "X-Rate-Limit": {
+                "type": "integer",
+                "format": "int32",
+                "description": "calls per hour allowed by the user"
+              },
+              "X-Expires-After": {
+                "type": "string",
+                "format": "date-time",
+                "description": "date in UTC when token expires"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Logs out current logged in user session",
+        "description": "",
+        "operationId": "logoutUser",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/user/{username}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user by user name",
+        "description": "",
+        "operationId": "getUserByName",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "The name that needs to be fetched. Use user1 for testing. ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Invalid username supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Updated user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "updateUser",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "name that need to be updated",
+            "required": true,
+            "type": "string"
           },
           {
             "in": "body",
-            "name": "proposta",
+            "name": "body",
+            "description": "Updated user object",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Proposta"
+              "$ref": "#/definitions/User"
             }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Successful Response",
-            "schema": {
-              "$ref": "#/definitions/inline_response_201_1"
-            }
-          },
           "400": {
-            "description": "Bad request."
-          },
-          "401": {
-            "description": "Unauthorized Access."
-          },
-          "403": {
-            "description": "Forbidden Access."
+            "description": "Invalid user supplied"
           },
           "404": {
-            "description": "Not Found."
-          },
-          "422": {
-            "description": "Semantic Error.",
-            "schema": {
-              "properties": {
-                "data": {
-                  "$ref": "#/definitions/Erro"
-                },
-                "idcStatus": {
-                  "type": "integer",
-                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error."
-          },
-          "503": {
-            "description": "Service Unavailable."
+            "description": "User not found"
           }
         }
-      }
-    },
-    "/v1/produto/consulta/cotacao": {
-      "get": {
+      },
+      "delete": {
         "tags": [
-          "prestamista-produtos"
+          "user"
         ],
-        "summary": "Consultar Cotação",
-        "description": "Consultar Cotação",
-        "operationId": "consultarCotacao",
+        "summary": "Delete user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "deleteUser",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "cdOrigemTransmissao",
-            "in": "header",
-            "description": "Canal Origem de Transmissao usado para chamada da API",
+            "name": "username",
+            "in": "path",
+            "description": "The name that needs to be deleted",
             "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "Tipo de pesquisa",
-            "in": "query",
-            "description": "1- P/ Nro. Controle -> Recuperar Vcto e Status e 2- P/ Nro. Controle -> Recuperar Objeto Cotação",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "name": "Numero de controle da Cotacao",
-            "in": "query",
-            "description": "Numero de controle da cotacao. Obrigatorio se tipo pesquisa for igual a 1",
-            "required": false,
-            "type": "integer"
+            "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/inline_response_201"
-            }
-          },
           "400": {
-            "description": "Bad request."
-          },
-          "401": {
-            "description": "Unauthorized Access."
-          },
-          "403": {
-            "description": "Forbidden Access."
+            "description": "Invalid username supplied"
           },
           "404": {
-            "description": "Not Found."
-          },
-          "422": {
-            "description": "Semantic Error.",
-            "schema": {
-              "properties": {
-                "data": {
-                  "$ref": "#/definitions/Erro"
-                },
-                "idcStatus": {
-                  "type": "integer",
-                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error."
-          },
-          "503": {
-            "description": "Service Unavailable."
+            "description": "User not found"
           }
         }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "petstore_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
+      "flow": "implicit",
+      "scopes": {
+        "write:pets": "modify pets in your account",
+        "read:pets": "read your pets"
       }
     },
-    "/v1/proposta/log-emissao": {
-      "get": {
-        "tags": [
-          "prestamista-proposta"
-        ],
-        "summary": "Consulta Log de Processamento da proposta de Seguro Prestamista na Fila de Emissão",
-        "description": "Consultar Log da Proposta",
-        "operationId": "obterLogPropostaPrestamistaMass",
-        "parameters": [
-          {
-            "name": "cdOrigemTransmissao",
-            "in": "query",
-            "description": "Canal Origem de Transmissao usado para chamada da API",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "nroControleCotacao",
-            "in": "query",
-            "description": "Numero de controle da cotacao. Obrigatorio.",
-            "required": true,
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "properties": {
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "cdLog": {
-                      "type": "integer",
-                      "format": "int64",
-                      "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
-                    },
-                    "dsLog": {
-                      "type": "string",
-                      "description": "Descrição do evento ocorrido no processamento da Proposta"
-                    },
-                    "dtLog": {
-                      "type": "string",
-                      "format": "date-time",
-                      "description": "Data da Ocorrencia no processamento da Proposta"
-                    },
-                    "cdAcao": {
-                      "type": "integer",
-                      "format": "int64",
-                      "description": "Código da Ação Tomada para contornar ocorrencia caso necessário"
-                    },
-                    "dsAcao": {
-                      "type": "string",
-                      "description": "Descricao da Ação Tomada para contornar ocorrencia caso necessário"
-                    },
-                    "dtAcao": {
-                      "type": "string",
-                      "format": "date-time",
-                      "description": "Data da da Ação Tomada para contornar ocorrencia caso necessário"
-                    }
-                  }
-                },
-                "idcStatus": {
-                  "type": "integer",
-                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request."
-          },
-          "401": {
-            "description": "Unauthorized Access."
-          },
-          "403": {
-            "description": "Forbidden Access."
-          },
-          "404": {
-            "description": "Not Found."
-          },
-          "422": {
-            "description": "Semantic Error.",
-            "schema": {
-              "properties": {
-                "data": {
-                  "$ref": "#/definitions/Erro"
-                },
-                "idcStatus": {
-                  "type": "integer",
-                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error."
-          },
-          "503": {
-            "description": "Service Unavailable."
-          }
-        }
-      }
-    },
-    "/v1/proposta/reprocessar-emissao": {
-      "put": {
-        "tags": [
-          "prestamista-proposta"
-        ],
-        "summary": "Reennvia a proposta de Seguro Prestamista para Fila de Emissão",
-        "description": "Reenviar a proposta",
-        "operationId": "reenviarPropostaPrestamistaMass",
-        "parameters": [
-          {
-            "name": "cdOrigemTransmissao",
-            "in": "query",
-            "description": "Canal Origem de Transmissao usado para chamada da API",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "nroControleCotacao",
-            "in": "query",
-            "description": "Numero de controle da cotacao. Obrigatorio.",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "cdStatus",
-            "in": "query",
-            "description": "Situação desejada da proposta. L:Liberada(Reenvia a Fila) C:Cancelada",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "nroProposta",
-            "in": "query",
-            "description": "Número da Proposta a reenviar.",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "cdProduto",
-            "in": "query",
-            "description": "Código do Produto da Proposta a reenviar.",
-            "required": true,
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "properties": {
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "nroRegistros": {
-                      "type": "integer",
-                      "format": "int64",
-                      "description": "Quantidade de Resgistros Atualizados"
-                    }
-                  }
-                },
-                "idcStatus": {
-                  "type": "integer",
-                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request."
-          },
-          "401": {
-            "description": "Unauthorized Access."
-          },
-          "403": {
-            "description": "Forbidden Access."
-          },
-          "404": {
-            "description": "Not Found."
-          },
-          "422": {
-            "description": "Semantic Error.",
-            "schema": {
-              "properties": {
-                "data": {
-                  "$ref": "#/definitions/Erro"
-                },
-                "idcStatus": {
-                  "type": "integer",
-                  "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error."
-          },
-          "503": {
-            "description": "Service Unavailable."
-          }
-        }
-      }
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
     }
   },
   "definitions": {
-    "PropostaResponse": {
+    "Order": {
       "type": "object",
       "properties": {
-        "idcCritica": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "petId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "shipDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "description": "Order Status",
+          "enum": [
+            "placed",
+            "approved",
+            "delivered"
+          ]
+        },
+        "complete": {
           "type": "boolean",
-          "description": "Indica se possui Impedimentos / Críticas"
-        },
-        "cdStatus": {
-          "type": "integer",
-          "description": "Cód. Situação da Cotação \nC: Criticada, \nA: Apta a Proposta, \nL: Liberada para Emissão\nE: Emitida\nR: Reenviar"
-        },
-        "criticas": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Critica"
-          }
-        }
-      }
-    },
-    "Critica": {
-      "type": "object",
-      "properties": {
-        "codCritica": {
-          "type": "integer"
-        },
-        "descCriticaSISE": {
-          "type": "string"
-        },
-        "descCriticaCanal": {
-          "type": "string"
-        },
-        "idcTipoCritica": {
-          "type": "integer"
-        }
-      }
-    },
-    "Proposta": {
-      "type": "object",
-      "properties": {
-        "nroControleCotacao": {
-          "type": "integer"
-        },
-        "nroPrefixo": {
-          "type": "integer"
-        },
-        "nroProposta": {
-          "type": "integer"
-        },
-        "cdPlano": {
-          "type": "integer"
-        },
-        "dtIniVigencia": {
-          "type": "string",
-          "format": "date"
-        },
-        "dtFimVigencia": {
-          "type": "string",
-          "format": "date"
-        },
-        "dtVencPrimeiraParcFinanc": {
-          "type": "string",
-          "format": "date"
-        },
-        "nroDiaVencimento": {
-          "type": "integer"
-        },
-        "endereco": {
-          "$ref": "#/definitions/EnderecoProposta"
-        },
-        "contato": {
-          "$ref": "#/definitions/ContatoProposta"
-        }
-      }
-    },
-    "Cotacao": {
-      "type": "object",
-      "properties": {
-        "produto": {
-          "$ref": "#/definitions/ProdutoCotacao"
-        },
-        "proponente": {
-          "$ref": "#/definitions/Proponente"
-        },
-        "pagamento": {
-          "$ref": "#/definitions/Pagamento"
-        }
-      }
-    },
-    "ProdutoCotacao": {
-      "type": "object",
-      "required": [
-        "cdCanalVenda",
-        "cdPlano",
-        "cdProduto",
-        "dtAssinaturaProposta",
-        "nroAgProdutora",
-        "qtMeses",
-        "vlCapital",
-        "vlParcelaFinanc"
-      ],
-      "properties": {
-        "cdCanalVenda": {
-          "type": "integer",
-          "description": "Código do Canal de Venda"
-        },
-        "cdProduto": {
-          "type": "integer",
-          "description": "Código do Produto do Seguro"
-        },
-        "cdPlano": {
-          "type": "integer",
-          "description": "Código do Plano do Produto de Seguro"
-        },
-        "dtAssinaturaProposta": {
-          "type": "string",
-          "format": "date",
-          "description": "Data de assinatura da Proposta / Data de celebração ISO yyyy-MM-dd"
-        },
-        "nroAgProdutora": {
-          "type": "integer",
-          "description": "Número da Agência de Venda"
-        },
-        "vlCapital": {
-          "type": "number",
-          "description": "Valor do Capital Segurado"
-        },
-        "qtMeses": {
-          "type": "integer",
-          "description": "Quantidade de meses do financiamento sem carência"
-        },
-        "vlParcelaFinanc": {
-          "type": "number",
-          "description": "Valor da Parcela do Empréstimo"
-        }
-      }
-    },
-    "Proponente": {
-      "type": "object",
-      "required": [
-        "cdEstadocivil",
-        "cdSexo",
-        "dtNasc",
-        "nmNome"
-      ],
-      "properties": {
-        "nmNome": {
-          "type": "string",
-          "description": "Nome do Proponente",
-          "maxLength": 50
-        },
-        "dtNasc": {
-          "type": "string",
-          "format": "date",
-          "description": "Data de Nascimento do Proponente ISO yyyy-MM-dd"
-        },
-        "cdSexo": {
-          "type": "integer",
-          "description": "Indicador de Sexo do Proponente\n- 1: Masculino \n- 2: Feminino"
-        },
-        "cdEstadocivil": {
-          "type": "integer",
-          "description": "Indicador do Estado Civil do Proponente\n- 1: Solteiro\n- 2: Viuvo\n- 3: Casado\n- 4: Desquitado\n- 5: Divorciado"
-        },
-        "documento": {
-          "$ref": "#/definitions/Documento"
-        },
-        "endereco": {
-          "$ref": "#/definitions/EnderecoCotacao"
-        }
-      }
-    },
-    "Pagamento": {
-      "type": "object",
-      "required": [
-        "cdFormaPagto",
-        "cdFrequenciaPagto"
-      ],
-      "properties": {
-        "cdFormaPagto": {
-          "type": "integer",
-          "description": "Código da Forma de Pagamento\n- 1: Debito em Conta Corrente"
-        },
-        "nroAgenciaProponente": {
-          "type": "integer",
-          "description": "Número da Agência Bancária do Proponente"
-        },
-        "nroContaProponente": {
-          "type": "integer",
-          "description": "Número da Conta do Proponente"
-        },
-        "nroDigitoContaProponente": {
-          "type": "integer",
-          "description": "Digito da Conta do Proponente"
-        },
-        "cdFrequenciaPagto": {
-          "type": "integer",
-          "description": "Frequência de Pagamento\n1 - Mensal"
-        }
-      }
-    },
-    "Documento": {
-      "type": "object",
-      "required": [
-        "cdTipoDocto",
-        "nroCpfCnpj"
-      ],
-      "properties": {
-        "cdTipoDocto": {
-          "type": "integer",
-          "description": "Tipo de Documento do Proponente\n- 1: RG\n- 2: CPF\n- 3: CNPJ"
-        },
-        "nroCpfCnpj": {
-          "type": "string",
-          "maxLength": 15
-        }
-      }
-    },
-    "CotacaoResponse": {
-      "type": "object",
-      "properties": {
-        "nroControleCotacao": {
-          "type": "integer",
-          "format": "int64",
-          "description": "Número de Controle da Cotação"
-        },
-        "dtVctoCotacao": {
-          "type": "string",
-          "format": "date-time",
-          "description": "Data Hora de Vencimento da Cotação ISO yyyy-MM-ddTHH:MM:SSZ"
-        },
-        "idcCritica": {
-          "type": "boolean",
-          "description": "Indica se possui Impedimentos / Críticas"
-        },
-        "cdStatus": {
-          "type": "string",
-          "description": "Cód. Situação da Cotação\n  C: Criticada, \n  A: Apta a Proposta, \n  L: Liberada para Emissão\n  E: Emitida"
-        },
-        "ofertas": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Ofertas"
-          }
-        },
-        "criticas": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/CriticaCotacao"
-          }
-        }
-      }
-    },
-    "Ofertas": {
-      "type": "object",
-      "properties": {
-        "cdPlano": {
-          "type": "number",
-          "description": "Código do Plano"
-        },
-        "descPlano": {
-          "type": "string",
-          "description": "Nome do Plano",
-          "maxLength": 40
-        },
-        "premio": {
-          "$ref": "#/definitions/Premio"
-        },
-        "coberturas": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Cobertura"
-          }
-        }
-      }
-    },
-    "Premio": {
-      "type": "object",
-      "properties": {
-        "vlPremioLiqCalc": {
-          "type": "number",
-          "description": "Valor do Premio Líquido Calculado"
-        },
-        "vlIofCalc": {
-          "type": "number",
-          "description": "Valor do IOF Calculado"
-        },
-        "vlPremioBrutoCalc": {
-          "type": "number",
-          "description": "Valor do Prêmio Bruto Calculado"
-        }
-      }
-    },
-    "Cobertura": {
-      "type": "object",
-      "properties": {
-        "cdCober": {
-          "type": "integer",
-          "description": "Codigo da Cobertura"
-        },
-        "descCobertura": {
-          "type": "string",
-          "description": "Descricao da Cobertura"
-        },
-        "vlCapitalCober": {
-          "type": "number",
-          "description": "Valor do Capital da Cobertura"
-        },
-        "vlTaxaCober": {
-          "type": "number",
-          "description": "Valor da Taxa de Cobertura"
-        },
-        "vlPremioCober": {
-          "type": "number",
-          "description": "Valor do Premio da Cobertura"
-        },
-        "vlIofCober": {
-          "type": "number",
-          "description": "Valor do IOF da Cobertura"
-        },
-        "nroOrdemImpressao": {
-          "type": "integer",
-          "description": "Numero de ordenacao para demonstracao / impressao"
-        }
-      }
-    },
-    "EnderecoCotacao": {
-      "type": "object",
-      "required": [
-        "nroCep"
-      ],
-      "properties": {
-        "nroCep": {
-          "type": "string",
-          "example": "06460-020",
-          "description": "Código CEP do Proponente",
-          "maxLength": 9,
-          "pattern": "([0-9]{5})-([0-9]{3})"
-        }
-      }
-    },
-    "EnderecoProposta": {
-      "type": "object",
-      "required": [
-        "cdUf",
-        "descBairro",
-        "descCidade",
-        "descEndereco"
-      ],
-      "properties": {
-        "descEndereco": {
-          "type": "string",
-          "description": "Endereço",
-          "maxLength": 60
-        },
-        "descComplEndereco": {
-          "type": "string",
-          "description": "Endereço",
-          "maxLength": 30
-        },
-        "descBairro": {
-          "type": "string",
-          "description": "Bairro",
-          "maxLength": 40
-        },
-        "descCidade": {
-          "type": "string",
-          "description": "Cidade",
-          "maxLength": 30
-        },
-        "cdUf": {
-          "type": "string",
-          "description": "UF",
-          "maxLength": 2
-        }
-      }
-    },
-    "ContatoProposta": {
-      "type": "object",
-      "properties": {
-        "descEmail": {
-          "type": "string",
-          "description": "Email",
-          "maxLength": 100
-        },
-        "nroDDDRes": {
-          "type": "number",
-          "description": "DDD Residencial"
-        },
-        "nroTelefoneRes": {
-          "type": "string",
-          "description": "Telefone Residencial",
-          "maxLength": 100
-        },
-        "nroDDDCelular": {
-          "type": "number",
-          "description": "DDD Celular"
-        },
-        "nroTelefoneCelular": {
-          "type": "string",
-          "description": "Telefone Celular",
-          "maxLength": 100
-        }
-      }
-    },
-    "CriticaCotacao": {
-      "type": "object",
-      "properties": {
-        "codCritica": {
-          "type": "integer",
-          "description": "Codigo da Critica"
-        },
-        "descCritica": {
-          "type": "string",
-          "description": "Descricao da Crítica",
-          "maxLength": 100
-        }
-      }
-    },
-    "Erro": {
-      "type": "object",
-      "properties": {
-        "codigo": {
-          "type": "integer"
-        },
-        "origem": {
-          "type": "string"
-        },
-        "mensagem": {
-          "type": "string"
-        }
-      }
-    },
-    "inline_response_201": {
-      "type": "object",
-      "properties": {
-        "data": {
-          "$ref": "#/definitions/CotacaoResponse"
-        },
-        "idcStatus": {
-          "type": "integer",
-          "description": "Identificador do Resultado da Requisição\n- 0: Êxito/Sucesso na requisição\nmaxLength: 1"
+          "default": false
         }
       },
-      "description": "Success Response Structure"
+      "xml": {
+        "name": "Order"
+      }
     },
-    "inline_response_201_1": {
+    "Category": {
       "type": "object",
       "properties": {
-        "data": {
-          "$ref": "#/definitions/PropostaResponse"
-        },
-        "idcStatus": {
+        "id": {
           "type": "integer",
-          "description": "Identificador do Resultado da Requisição\n- 0: Êxito/Sucesso na requisição\nmaxLength: 1"
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
         }
       },
-      "description": "Success Response Structure"
-    }
-  },
-  "parameters": {
-    "canal_origem": {
-      "name": "cdOrigemTransmissao",
-      "in": "header",
-      "description": "Canal Origem de Transmissao usado para chamada da API",
-      "required": true,
-      "type": "integer"
+      "xml": {
+        "name": "Category"
+      }
     },
-    "codigo_produto": {
-      "name": "cdProduto",
-      "in": "query",
-      "description": "Código do Produto de Seguro",
-      "required": true,
-      "type": "integer"
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "username": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "userStatus": {
+          "type": "integer",
+          "format": "int32",
+          "description": "User Status"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
     },
-    "codigo_plano": {
-      "name": "cdPlano",
-      "in": "query",
-      "description": "Código do Plano do Produto de Seguro",
-      "required": false,
-      "type": "integer"
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Tag"
+      }
     },
-    "codigo_seguradora": {
-      "name": "cdCia",
-      "in": "query",
-      "description": "Código da Companhia Seguradora",
-      "required": false,
-      "type": "integer"
-    },
-    "codigo_dominio": {
-      "name": "cdDominio",
-      "in": "query",
-      "description": "Codigo do Dominio",
-      "required": true,
-      "type": "string",
-      "maxLength": 20
-    },
-    "tipo_critica": {
-      "name": "idcTipoCritica",
-      "in": "query",
-      "description": "Indicador do tipo de crítica\n- 1: Física\n- 2: Lógica\n- 3: Emissão",
-      "required": false,
-      "type": "integer"
-    },
-    "numero_proposta": {
-      "name": "nroProposta",
-      "in": "query",
-      "required": true,
-      "type": "integer"
-    },
-    "numero_controle": {
-      "name": "nroControleCotacao",
-      "in": "header",
-      "description": "Número de Controle da Cotação",
-      "required": false,
-      "type": "integer",
-      "format": "int64"
-    },
-    "codigo_valor": {
-      "name": "cdValor",
-      "in": "query",
-      "description": "Codigo do Valor",
-      "required": false,
-      "type": "integer"
-    },
-    "tipo_dominio": {
-      "name": "tipo",
-      "in": "query",
-      "description": "Tipo de Dominio",
-      "required": false,
-      "type": "integer"
-    },
-    "dtBaseFatorPer": {
-      "name": "dtBaseFatorPer",
-      "in": "query",
-      "description": "Data de Referência do Fator Periodicidade",
-      "required": false,
-      "type": "string"
-    },
-    "dtBaseIOF": {
-      "name": "dtBaseIOF",
-      "in": "query",
-      "description": "Data de Referência do IOF",
-      "required": false,
-      "type": "string"
-    },
-    "tpPesquisa": {
-      "name": "Tipo de pesquisa",
-      "in": "query",
-      "description": "1- P/ Nro. Controle -> Recuperar Vcto e Status e 2- P/ Nro. Controle -> Recuperar Objeto Cotação",
-      "required": false,
-      "type": "integer"
-    },
-    "nroControleCotacao": {
-      "name": "Numero de controle da Cotacao",
-      "in": "query",
-      "description": "Numero de controle da cotacao. Obrigatorio se tipo pesquisa for igual a 1",
-      "required": false,
-      "type": "integer"
-    }
-  },
-  "responses": {
-    "BadRequest": {
-      "description": "Bad request."
-    },
-    "Unauthorized": {
-      "description": "Unauthorized Access."
-    },
-    "Forbidden": {
-      "description": "Forbidden Access."
-    },
-    "NotFound": {
-      "description": "Not Found."
-    },
-    "UnprocessableEntity": {
-      "description": "Semantic Error.",
-      "schema": {
-        "properties": {
-          "data": {
-            "$ref": "#/definitions/Erro"
+    "Pet": {
+      "type": "object",
+      "required": [
+        "name",
+        "photoUrls"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "category": {
+          "$ref": "#/definitions/Category"
+        },
+        "name": {
+          "type": "string",
+          "example": "doggie"
+        },
+        "photoUrls": {
+          "type": "array",
+          "xml": {
+            "name": "photoUrl",
+            "wrapped": true
           },
-          "idcStatus": {
-            "type": "integer",
-            "description": "Identificador do Resultado da Requisição\n- 10: Erros de integridade/consistência física nos dados da camada de aplicação\n- 20: Erros de consistência lógica (ex: nenhum dado localizado em um serviço de consulta)\n- 30: Erros gerados dentro da camada de banco de dados (ex: timeout, erro de PK ou FK)\n- 40: Erros de origem externa (ex. erros gerados na chamada ou capturados no retorno de serviços externos)\nmaxLength: 2"
+          "items": {
+            "type": "string"
           }
+        },
+        "tags": {
+          "type": "array",
+          "xml": {
+            "name": "tag",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/Tag"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "pet status in the store",
+          "enum": [
+            "available",
+            "pending",
+            "sold"
+          ]
         }
+      },
+      "xml": {
+        "name": "Pet"
       }
     },
-    "InternalServerError": {
-      "description": "Internal Server Error."
-    },
-    "ServiceUnavailable": {
-      "description": "Service Unavailable."
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
     }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
   }
 }
